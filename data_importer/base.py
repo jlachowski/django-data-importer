@@ -3,11 +3,11 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db.models.fields.files import FieldFile
-from django.utils.datastructures import SortedDict
 from django.utils.encoding import smart_unicode
 from django.utils.translation import ugettext as _
 from data_importer.exceptions import UnknowSource
 from data_importer.readers import *
+from collections import OrderedDict
 import sys
 import traceback
 import logging
@@ -30,10 +30,10 @@ class BaseImporter(object):
     required_fields = []
     reader = None
     loaded = False
-    errors = SortedDict() # {lineNum:list(set([error1,error2])),...}
+    errors = OrderedDict() # {lineNum:list(set([error1,error2])),...}
 
     def __init__(self,import_file,reader=None,reader_kwargs={}):
-        self._validation_results = SortedDict()
+        self._validation_results = OrderedDict()
         self.set_logger()
         self._load(import_file)
         self.reader = self._get_reader(reader,reader_kwargs)
@@ -142,12 +142,12 @@ class BaseImporter(object):
         return not self.errors
 
     def _clean_all(self):
-        self.errors = SortedDict()
+        self.errors = OrderedDict()
         for i,row in enumerate(self.reader,1):
             self._clean(i,row)
 
     def _iter_clean_all(self):
-        self.errors = SortedDict()
+        self.errors = OrderedDict()
         for i,row in enumerate(self.reader,1):
             yield i,self._clean(i,row)
 
@@ -176,7 +176,7 @@ class BaseImporter(object):
             self.logger.warning(u"Linha %s é vazia, foi ignorada." % i)
             return
 
-        line_errors = SortedDict()
+        line_errors = OrderedDict()
         row = _row.copy()
         row['_i'] = i
 
