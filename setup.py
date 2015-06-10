@@ -5,13 +5,13 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="django-data-importer",
-    version="0.1.0-p3",
+    name="django-data-importer-jl",
+    version="0.1.1",
     author="Felipe 'chronos' Prenholato",
     author_email="philipe.rp@gmail.com",
-    mainteiner="Felipe 'chronos' Prenholato",
-    mainteiner_email="philipe.rp@gmail.com",
-    url="http://github.com/chronossc/django-data-importer",
+    mainteiner="Jaroslaw Lachowski",
+    mainteiner_email="jalachowski@gmail.com",
+    url="http://github.com/jlachowski/django-data-importer",
     packages = find_packages(exclude=('sampleprojet',)),
     description="Generic, easy to use, file reader and importer with validations like Django forms.",
     long_description="*data_importer* is a importer tool that allow you write "

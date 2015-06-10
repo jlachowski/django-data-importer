@@ -7,13 +7,13 @@ OLD_DJANGO="$(pip freeze | grep Django)"
 
 test_13() {
 	echo "Testing against Django 1.3.x ..."
-	pip install -q -U --use-mirrors Django\<1.4.0
+	pip install -q -U Django\<1.4.0
 	python runtests.py --failfast --noinput -v0 && return 0 || return 1
 }
 
 test_14() {
 	echo "Testing against Django 1.4.x ..."
-	pip install -q -U --use-mirrors Django\<1.5.0
+	pip install -q -U Django\<1.5.0
 	python runtests.py --failfast --noinput -v0 && return 0 || return 1
 }
 
@@ -23,7 +23,7 @@ result=$?
 
 if [[ "$OLD_DJANGO" ]];
 then
-	pip install -q -U --use-mirrors "$OLD_DJANGO"
+	pip install -q -U "$OLD_DJANGO"
 	echo "$OLD_DJANGO reinstalled"
 else
 	pip uninstall Django
