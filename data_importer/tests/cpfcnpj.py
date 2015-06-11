@@ -5,12 +5,12 @@ from random import randint
 from django.db import models
 from django import forms
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 # -------------------------------------------------
 # Based in http://www.python.org.br/wiki/VerificadorDeCnpj
 # This code was created for a path to django that lives in https://github.com/chronossc/django/blob/ticket13473/django/contrib/localflavor/br/br_cpfcnpj.py
-# 
+#
 class CNPJ(object):
     """
     This class that represents a CNPJ number.
@@ -36,9 +36,9 @@ class CNPJ(object):
         'max_digits': _(u"CNPJ requires at most 14 digits or 18 characters."),
         'digits_only': _(u"CNPJ requires only numbers, allow '.', '/' and '-' for long format."),
     }
-    
+
     def __init__(self, cnpj):
-        
+
         # transform list or int or long in a string
         if type(cnpj) in (int,long):
             cnpj = u"%s" % cnpj
@@ -106,7 +106,7 @@ class CNPJ(object):
             return self.cnpj == other.cnpj
         return False
 
-    def __unicode__(self): 
+    def __unicode__(self):
         """
         Return CNPJ in long format, with '.', '/' and '.'. For simple format
         use CNPJ(...).single property/method
@@ -118,14 +118,14 @@ class CNPJ(object):
         """
         d = ((2, "."), (6, "."), (10, "/"), (15, "-"))
         s = map(str, self.cnpj)
-        
+
         for i, v in d:
             s.insert(i, v)
-        
+
         r = ''.join(s)
-        
+
         return r
-    
+
     def __str__(self):
         return self.__unicode__()
 
@@ -142,13 +142,13 @@ class CNPJ(object):
 
         # get company id + filial id (first 12 digits)
         cnpj = self.cnpj[:12]
-        
+
         # and following rules we stabilish some weight to multiply
         def weightlist(s=12):
             x = (range(2,10)*2)[:s]
             x.reverse()
             return x
-        
+
         # while cnpj isn't complete
         while len(cnpj) < 14:
 
@@ -387,7 +387,7 @@ def CPFGenerator(amount=1,cpfn=None):
     d2weight = range(2,12) # [2,3,...,11]
     d2weight.reverse()
 
-    # create how many cpfs amount says then add to set cpfs 
+    # create how many cpfs amount says then add to set cpfs
     cpfs=set()
 
     while len(cpfs) < amount:

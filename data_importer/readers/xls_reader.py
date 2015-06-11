@@ -75,12 +75,12 @@ class XLSXReader(XLSReader):
             self._headers = map(self.normalize_string,[c.value for c in self._reader.rows[0]])
         return self._headers
 
-    def get_value(self,item,**kwargs):
+    def get_value(self, item,**kwargs):
         """
         Handle different value types for XLSX. Item is a cell object.
         """
         # Thx to Augusto C Men to point fast solution for XLS/XLSX dates
-        if item.is_date() and isinstance(item,(int,float)):
+        if item.is_date and isinstance(item,(int,float)):
             return datetime.date(1899,12,30) + datetime.timedelta(days=item)
         if item.value is None:
             if item.data_type == item.TYPE_STRING:
