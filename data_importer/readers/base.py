@@ -1,9 +1,9 @@
 # coding: utf-8
-from django.utils.datastructures import SortedDict
-from django.utils.encoding import smart_unicode
+from collections import OrderedDict
 from data_importer.exceptions import UnknowSource
 import unicodedata
 from data_importer.utils import to_unicode
+
 
 class BaseReader(object):
 
@@ -87,7 +87,7 @@ class BaseReader(object):
         # {'a':1,'b':2}
         # if we have headers = ['a','b','c','d'] and values [1,2], dict will be
         # {'a':1,'b':2}
-        d = SortedDict([i for i in zip(self.headers,map(normalize,row)) if i[0]])
+        d = OrderedDict([i for i in zip(self.headers,map(normalize,row)) if i[0]])
         # since zip can cut tuple to smaller sequence, if we get incomplete
         # lines in file this for over headers put it on row dict
         for k in self.headers:
@@ -131,5 +131,3 @@ class BaseReader(object):
         name and values. get_items should set headers too.
         """
         raise NotImplementedError
-
-

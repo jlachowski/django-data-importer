@@ -3,10 +3,11 @@
 
 # from distutils.core import setup
 from setuptools import setup, find_packages
+import data_importer
 
 setup(
     name="django-data-importer-jl",
-    version="0.1.1",
+    version=data_importer.get_version(),
     author="Felipe 'chronos' Prenholato",
     author_email="philipe.rp@gmail.com",
     mainteiner="Jaroslaw Lachowski",

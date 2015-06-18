@@ -7,7 +7,7 @@ from django.test import TestCase
 from data_importer.tests.cpfcnpj import CPF
 from data_importer.tests.importers import BaseImportWithFields, SimpleValidationsImporter, RequiredFieldValidationsImporter,\
     SimpleValidationsImporterDB, RequiredFieldValidationsImporterDB
-from django.utils.datastructures import SortedDict
+from collections import OrderedDict
 from data_importer.tests.mocks import MockLoggingHandler
 from data_importer.handlers import DBLoggingHandler
 from data_importer.tests.models import Error
@@ -129,14 +129,14 @@ class BaseImporterTests(TestCase):
         del(importer)
 
     def test_before_clean__validation_results(self):
-        """ attr __validation_results should be empty SortedDict """
+        """ attr __validation_results should be empty OrderedDict """
         importer = SimpleValidationsImporter(self.files['csv_sheet'])
-        self.assertEquals(SortedDict(),importer._validation_results)
+        self.assertEquals(OrderedDict(),importer._validation_results)
 
     def test_before_clean_errors(self):
-        """ attr errors should be empty SortedDict """
+        """ attr errors should be empty OrderedDict """
         importer = SimpleValidationsImporter(self.files['csv_sheet'])
-        self.assertEquals(SortedDict(),importer.errors)
+        self.assertEquals(OrderedDict(),importer.errors)
 
     def test_mock_log_instance(self):
         importer = SimpleValidationsImporter(self.files['csv_sheet'])
@@ -188,7 +188,7 @@ class ImportersValidationsTests(TestCase):
     def test_invalid_errors(self):
         importer = SimpleValidationsImporter(self.files['csv_invalid_cpf_sheet'])
         self.assertTrue(not importer.is_valid(),u"Should return False to is_valid()")
-        self.assertNotEquals(SortedDict(),importer.errors) # importer.errors shouldn't be empty
+        self.assertNotEquals(OrderedDict(),importer.errors) # importer.errors shouldn't be empty
         for i in importer.errors:
             self.assertEquals(True,i in self.invalid_lines)
             for k,v in importer.errors[i].items():
