@@ -30,8 +30,8 @@ class SimpleValidationsImporter(BaseImportWithFields):
         if not val: return val
         try:
             val = CPF(val)
-        except ValueError,msg:
-            raise ValidationError,smart_unicode(msg)
+        except ValueError as msg:
+            raise ValidationError(smart_unicode(msg))
         else:
             return val
 
@@ -58,8 +58,8 @@ class RequiredFieldValidationsImporter(SimpleValidationsImporter):
     def clean_cpf(self,val,row):
         try:
             val = CPF(val)
-        except ValueError,msg:
-            raise ValidationError,smart_unicode(msg)
+        except ValueError as msg:
+            raise ValidationError(smart_unicode(msg))
         else:
             return val
 

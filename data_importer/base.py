@@ -63,7 +63,7 @@ class BaseImporter(object):
                 self.import_file = open(source.file.name, 'rb')
             if isinstance(source, basestring):
                 self.import_file = open(source, 'rb')
-        except Exception, err:
+        except Exception as err:
             raise UnknowSource(err)
 
         self.loaded = True
@@ -78,9 +78,9 @@ class BaseImporter(object):
 
             parts = self.import_file.name.rsplit('.',1)
             if len(parts) < 2:
-                raise ValueError,_(u"Impossible to discover file extension! You should specify a reader from data_importer.readers.")
+                raise ValueError(_(u"Impossible to discover file extension! You should specify a reader from data_importer.readers."))
             if parts[-1].lower() not in READERS_X_EXTENSIONS:
-                raise ValueError,_(u"Doesn't exist a relation between file extension and a reader. You should specify a reader from data_importer.readers or crete your own.")
+                raise ValueError(_(u"Doesn't exist a relation between file extension and a reader. You should specify a reader from data_importer.readers or crete your own."))
             return READERS_X_EXTENSIONS[parts[-1].lower()](self.import_file,**reader_kwargs)
         except Exception:
             exc_info = sys.exc_info()
@@ -209,7 +209,7 @@ class BaseImporter(object):
                 try:
                     val = getattr(self,'clean_%s' % field)(row[field],row.copy())
                     row[field] = val
-                except ValidationError, msg:
+                except ValidationError as msg:
                     if field not in line_errors:
                         line_errors[field] = [append_error(field,msg)]
                     else:

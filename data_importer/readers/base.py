@@ -30,7 +30,7 @@ class BaseReader(object):
                 self._source = source
             if isinstance(source, basestring):
                 self._source = open(source, 'rb')
-        except Exception, err:
+        except Exception as err:
             raise UnknowSource(err)
 
         self.loaded = True
@@ -109,7 +109,7 @@ class BaseReader(object):
         """
 
         if not self._headers:
-            self._headers = map(self.normalize_string,self._reader.next())
+            self._headers = map(self.normalize_string,next(self._reader))
         return self._headers
 
     def normalize_string(self,value):

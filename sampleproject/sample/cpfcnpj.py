@@ -315,7 +315,7 @@ class CPF(object):
 
             # run trought numbers multiplying number (v) by weight (len(cpf)+1-i)
             # and then get sum rest of division by 11 as integer
-            r = int(sum(map(lambda(i,v):math.floor((len(cpf)+1-i)*v),enumerate(cpf))) % 11)
+            r = int(sum(map(lambda i_v:math.floor((len(cpf)+1-i_v[0])*i_v[1]),enumerate(cpf))) % 11)
 
             # if digit is smaller than 2, turns 0
             if r < 2:
