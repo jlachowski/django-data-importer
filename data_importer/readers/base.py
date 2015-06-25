@@ -1,3 +1,15 @@
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import zip
+from builtins import next
+from builtins import map
+from builtins import *
+from builtins import object
 # coding: utf-8
 from collections import OrderedDict
 from data_importer.exceptions import UnknowSource
@@ -28,7 +40,7 @@ class BaseReader(object):
         try:
             if isinstance(source, file):
                 self._source = source
-            if isinstance(source, basestring):
+            if isinstance(source, str):
                 self._source = open(source, 'rb')
         except Exception as err:
             raise UnknowSource(err)
@@ -75,7 +87,7 @@ class BaseReader(object):
         Given a header and a row return a sorted dict
         """
         def normalize(s):
-            if isinstance(s,basestring):
+            if isinstance(s,str):
                 try:
                     return to_unicode(s.strip())
                 except (UnicodeDecodeError,UnicodeEncodeError):
@@ -87,7 +99,7 @@ class BaseReader(object):
         # {'a':1,'b':2}
         # if we have headers = ['a','b','c','d'] and values [1,2], dict will be
         # {'a':1,'b':2}
-        d = OrderedDict([i for i in zip(self.headers,map(normalize,row)) if i[0]])
+        d = OrderedDict([i for i in zip(self.headers,list(map(normalize,row))) if i[0]])
         # since zip can cut tuple to smaller sequence, if we get incomplete
         # lines in file this for over headers put it on row dict
         for k in self.headers:
@@ -109,7 +121,7 @@ class BaseReader(object):
         """
 
         if not self._headers:
-            self._headers = map(self.normalize_string,next(self._reader))
+            self._headers = list(map(self.normalize_string,next(self._reader)))
         return self._headers
 
     def normalize_string(self,value):
@@ -118,7 +130,7 @@ class BaseReader(object):
         value = value.strip()
         value = value.lower()
         try:
-            value = unicodedata.normalize('NFKD',unicode(value))
+            value = unicodedata.normalize('NFKD',str(value))
         except (UnicodeDecodeError,UnicodeEncodeError):
             value = unicodedata.normalize('NFKD',to_unicode(value))
         value = value.encode('ascii','ignore')

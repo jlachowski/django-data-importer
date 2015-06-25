@@ -1,4 +1,13 @@
 # coding: utf-8
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import map
+from builtins import range
+from builtins import *
 import datetime
 import xlrd
 import openpyxl
@@ -13,7 +22,7 @@ from .base import BaseReader
     XL_CELL_BOOLEAN,
     XL_CELL_ERROR,
     XL_CELL_BLANK, # for use in debugging, gathering stats, etc
-) = range(7)
+) = list(range(7))
 
 class XLSReader(BaseReader):
     def __init__(self,f,**kwargs):
@@ -34,7 +43,7 @@ class XLSReader(BaseReader):
     @property
     def headers(self):
         if not self._headers:
-            self._headers = map(self.normalize_string,[self._reader.cell(0,c).value for c in range(self.ncols)])
+            self._headers = list(map(self.normalize_string,[self._reader.cell(0,c).value for c in range(self.ncols)]))
         return self._headers
 
     def get_value(self,item,**kwargs):
@@ -72,7 +81,7 @@ class XLSXReader(XLSReader):
     @property
     def headers(self):
         if not self._headers:
-            self._headers = map(self.normalize_string,[c.value for c in self._reader.rows[0]])
+            self._headers = list(map(self.normalize_string,[c.value for c in self._reader.rows[0]]))
         return self._headers
 
     def get_value(self, item,**kwargs):

@@ -1,6 +1,14 @@
 """
 
 """
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import *
 import os
 import data_importer
 from django.test import TestCase
@@ -191,7 +199,7 @@ class ImportersValidationsTests(TestCase):
         self.assertNotEquals(OrderedDict(),importer.errors) # importer.errors shouldn't be empty
         for i in importer.errors:
             self.assertEquals(True,i in self.invalid_lines)
-            for k,v in importer.errors[i].items():
+            for k,v in list(importer.errors[i].items()):
                 self.assertEquals(True,k in self.invalid_lines[i])
                 self.assertEquals(self.invalid_lines[i][k],v)
 
@@ -226,7 +234,7 @@ class ImportersValidationsTests(TestCase):
 
         for i in importer.errors:
             self.assertEquals(True,i in invalid_lines)
-            for k,v in importer.errors[i].items():
+            for k,v in list(importer.errors[i].items()):
                 self.assertEquals(True,k in invalid_lines[i])
                 self.assertEquals(invalid_lines[i][k],v)
 
@@ -260,7 +268,7 @@ class ImportersValidationsTests(TestCase):
             if not data and i+1 in invalid_lines: # dict data starts from 1
                 self.assertEquals(data,None)
             else:
-                for k,v in know_data.items():
+                for k,v in list(know_data.items()):
                     # RequiredFieldValidationsImporterDB should return field
                     # CPF as instance of data_importer.tests.cpfcnpj.CPF class,
                     # so we make cpf a instance before comparation

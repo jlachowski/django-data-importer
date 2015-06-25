@@ -1,3 +1,16 @@
+from __future__ import division
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import map
+from builtins import str
+from builtins import zip
+from builtins import range
+from builtins import *
+from past.utils import old_div
+from builtins import object
 # -*- coding: utf-8 -*-
 
 import re, math
@@ -39,20 +52,20 @@ class CNPJ(object):
     def __init__(self, cnpj):
         
         # transform list or int or long in a string
-        if type(cnpj) in (int,long):
+        if type(cnpj) in (int,int):
             cnpj = u"%s" % cnpj
         if type(cnpj) in (list,tuple):
             cnpj= u''.join([str(x) for x in cnpj])
 
         try:
-            basestring
+            str
         except:
-            basestring = (str, unicode)
+            str = (str, str)
         # only numbers = 14, numbers with '.', '/' and '-' = 18
         if len(cnpj) not in (14,18):
             raise ValueError(self.error_messages['max_digits'])
 
-        if isinstance(cnpj, basestring):
+        if isinstance(cnpj, str):
             # remove characters
             cnpj = cnpj.replace(".", "")
             cnpj = cnpj.replace("-", "")
@@ -63,7 +76,7 @@ class CNPJ(object):
                 raise ValueError(self.error_messages['digits_only'])
 
         # turn into a list of integers
-        self.cnpj = map(int, cnpj)
+        self.cnpj = list(map(int, cnpj))
 
         # validate number and validation digits
         if not self.is_valid:
@@ -116,7 +129,7 @@ class CNPJ(object):
 
         """
         d = ((2, "."), (6, "."), (10, "/"), (15, "-"))
-        s = map(str, self.cnpj)
+        s = list(map(str, self.cnpj))
         
         for i, v in d:
             s.insert(i, v)
@@ -144,7 +157,7 @@ class CNPJ(object):
         
         # and following rules we stabilish some weight to multiply
         def weightlist(s=12):
-            x = (range(2,10)*2)[:s]
+            x = (list(range(2,10))*2)[:s]
             x.reverse()
             return x
         
@@ -195,7 +208,7 @@ class CPF(object):
     """
     
     # cpfs with same number in all digits isn't valid
-    invalid_cpfs=map(lambda x: [x for i in range(11)],xrange(1,9))
+    invalid_cpfs=[[x for i in range(11)] for x in range(1,9)]
 
     error_messages = {
         'invalid': _(u"Invalid CPF number."),
@@ -206,22 +219,22 @@ class CPF(object):
     def __init__(self, cpf):
 
         # transform list or int or long in a string
-        if type(cpf) in (int,long):
+        if type(cpf) in (int,int):
             cpf = u"%s" % cpf
         if type(cpf) in (list,tuple):
             cpf= u''.join([str(x) for x in cpf])
 
         try:
-            basestring
+            str
         except:
-            basestring = (str, unicode)
+            str = (str, str)
         
         # only numbers = 11, numbers + '.' and '_' = 14
         if len(cpf) not in (11,14):
             # need to be xxxxxxxxxxx or xxx.xxx.xxx-xx
             raise ValueError(self.error_messages['max_digits'])
 
-        if isinstance(cpf, basestring):
+        if isinstance(cpf, str):
             # remove characters
             cpf = cpf.replace(".", "")
             cpf = cpf.replace("-", "")
@@ -230,7 +243,7 @@ class CPF(object):
                 raise ValueError(self.error_messages['digits_only'])
         
         # turn into a list of integers
-        self.cpf = map(int, cpf)
+        self.cpf = list(map(int, cpf))
 
         # validate number and validation digits
         if not self.is_valid:
@@ -283,7 +296,7 @@ class CPF(object):
         """
         
         d = ((3, "."), (7, "."), (11, "-"))
-        s = map(str, self.cpf)
+        s = list(map(str, self.cpf))
 
         for i, v in d:
             s.insert(i, v)
@@ -314,7 +327,7 @@ class CPF(object):
 
             # run trought numbers multiplying number (v) by weight (len(cpf)+1-i)
             # and then get sum rest of division by 11 as integer
-            r = int(sum(map(lambda i_v:math.floor((len(cpf)+1-i_v[0])*i_v[1]),enumerate(cpf))) % 11)
+            r = int(sum([math.floor((len(cpf)+1-i_v[0])*i_v[1]) for i_v in enumerate(cpf)]) % 11)
 
             # if digit is smaller than 2, turns 0
             if r < 2:
@@ -328,7 +341,7 @@ class CPF(object):
         # if created number is same as original number, cpf is valid
         return bool(cpf == self.cpf)
 
-    def __nonzero__(self):
+    def __bool__(self):
         return self.is_valid
     
     @property
@@ -351,7 +364,7 @@ def get_digits(randns,d1weight,d2weight):
     d1sum = sum(d1ns)
     
     # get firts digit. if first digit >= 10, transform in 0
-    d1 = int(round(d1sum - (math.floor(d1sum/11)*11)))
+    d1 = int(round(d1sum - (math.floor(old_div(d1sum,11))*11)))
     if d1 < 2:
         d1 = 0
     else:
@@ -366,7 +379,7 @@ def get_digits(randns,d1weight,d2weight):
     d2sum = sum(d2ns)
     
     # get second digit. if second digit >= 10, transform in 0
-    d2 = int(round(d2sum - (math.floor(d2sum/11)*11)))
+    d2 = int(round(d2sum - (math.floor(old_div(d2sum,11))*11)))
     if d2 < 2:
         d2 = 0
     else:
@@ -379,11 +392,11 @@ def CPFGenerator(amount=1,cpfn=None):
 
     # randnumbers are created from 0 to 9, and multiplicated by these list for
     # fist digit
-    d1weight = range(2,11) # [2,3,...,10]
+    d1weight = list(range(2,11)) # [2,3,...,10]
     d1weight.reverse()
     
     # for second digit same as for first digit, but with d1
-    d2weight = range(2,12) # [2,3,...,11]
+    d2weight = list(range(2,12)) # [2,3,...,11]
     d2weight.reverse()
 
     # create how many cpfs amount says then add to set cpfs 
