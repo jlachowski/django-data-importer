@@ -12,7 +12,7 @@ from builtins import object
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db.models.fields.files import FieldFile
-from django.utils.encoding import smart_unicode
+from django.utils.encoding import smart_text
 from django.utils.translation import ugettext as _
 from data_importer.exceptions import UnknowSource
 from data_importer.readers import *
@@ -193,11 +193,11 @@ class BaseImporter(object):
             if i not in self.errors:
                 self.errors[i] = []
             if isinstance(msg,ValidationError):
-                self.errors[i] = list(set(self.errors[i]+list(map(smart_unicode,msg.messages))))
-                return map(smart_unicode,msg.messages)[0]
+                self.errors[i] = list(set(self.errors[i]+list(map(smart_text,msg.messages))))
+                return map(smart_text,msg.messages)[0]
             else:
-                self.errors[i] = list(set(self.errors[i] + [smart_unicode(msg)]))
-                return smart_unicode(msg)
+                self.errors[i] = list(set(self.errors[i] + [smart_text(msg)]))
+                return smart_text(msg)
 
         # validate required fields first
         for field in self.required_fields:
