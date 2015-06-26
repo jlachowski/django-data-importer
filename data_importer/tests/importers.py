@@ -8,7 +8,7 @@ from __future__ import absolute_import
 from future import standard_library
 standard_library.install_aliases()
 from builtins import *
-from data_importer import BaseImporter, ValidationError
+from data_importer.base import BaseImporter, ValidationError
 from data_importer.tests.cpfcnpj import CPF
 from data_importer.tests.mocks import MockLoggingHandler
 from data_importer.handlers import DBLoggingHandler
