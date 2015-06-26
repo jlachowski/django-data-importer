@@ -9,9 +9,6 @@ from builtins import str
 from builtins import *
 VERSION = (0, 1, 4)
 
-from .base import BaseImporter, ValidationError
-from .readers import *
-
 
 def get_version():
     "Returns the version as a human-format string."
