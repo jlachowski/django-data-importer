@@ -1,6 +1,6 @@
 # Django Data Importer
 
-<a href="https://travis-ci.org/#!/chronossc/django-data-importer" title="Django Data Importer Travis Status"><img src="https://secure.travis-ci.org/chronossc/django-data-importer.png?branch=master"></a>
+[![Build Status](https://travis-ci.org/jlachowski/django-data-importer.svg?branch=master)](https://travis-ci.org/jlachowski/django-data-importer)
 
 Data importer was created with intention of be a good base to create importers that import anything to anywhere.
 Data importer have support to custom file (may stream) readers, a interface with [Python Logging Library](http://docs.python.org/library/logging.html) that allow you to use custom logging handlers, support to data validation for each defined field of each line (very similar to Django Form Validation), support to required fields and finally a save method that you can customize to meet your needs.
