@@ -7,11 +7,10 @@ from future import standard_library
 standard_library.install_aliases()
 from builtins import str
 from builtins import *
-VERSION = (0, 1, 2)
+VERSION = (0, 1, 4)
 
 from .base import BaseImporter, ValidationError
 from .readers import *
-#from . import tests
 
 
 def get_version():
