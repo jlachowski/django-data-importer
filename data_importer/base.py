@@ -9,7 +9,6 @@ from builtins import map
 from builtins import *
 from builtins import object
 
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db.models.fields.files import FieldFile
 from django.utils.encoding import smart_text
@@ -44,6 +43,7 @@ class BaseImporter(object):
     errors = OrderedDict()  # {lineNum:list(set([error1,error2])),...}
 
     def __init__(self, import_file, reader=None, reader_kwargs={}):
+        from django.conf import settings
         self._validation_results = OrderedDict()
         self.set_logger()
         self._load(import_file)
@@ -104,6 +104,7 @@ class BaseImporter(object):
         """
         Initialize the logger, I recommend that you not change this method ;)
         """
+        from django.conf import settings
         try:
             logging.setLoggerClass(self.get_logger_class())
         except NotImplementedError:
