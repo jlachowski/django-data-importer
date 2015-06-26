@@ -185,7 +185,7 @@ class BaseImporter(object):
             return self._validation_results[i]
 
         if not any(_row.values()):
-            self.logger.warning(u"Linha %s é vazia, foi ignorada." % i)
+            self.logger.warning(u"Line %s is empty, it was ignored." % i)
             return
 
         line_errors = OrderedDict()
@@ -196,7 +196,7 @@ class BaseImporter(object):
             if i not in self.errors:
                 self.errors[i] = []
             if isinstance(msg, ValidationError):
-                self.errors[i] = list(set(self.errors[i] + list(map(smart_text, msg.messages))))
+                self.errors[i] = list(set(self.errors[i] + list(map(smart_text,  msg.messages))))
                 return map(smart_text, msg.messages)[0]
             else:
                 self.errors[i] = list(set(self.errors[i] + [smart_text(msg)]))
