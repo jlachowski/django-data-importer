@@ -8,6 +8,7 @@ standard_library.install_aliases()
 from builtins import map
 from builtins import *
 from builtins import object
+from past.builtins import basestring
 
 from django.core.exceptions import ValidationError
 from django.db.models.fields.files import FieldFile
@@ -73,7 +74,7 @@ class BaseImporter(object):
                 self.import_file = source
             if isinstance(source, FieldFile):
                 self.import_file = open(source.file.name, 'rb')
-            if isinstance(source, str):
+            if isinstance(source, basestring):
                 self.import_file = open(source, 'rb')
         except Exception as err:
             raise UnknowSource(err)
