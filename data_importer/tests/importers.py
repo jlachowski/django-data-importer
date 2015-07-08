@@ -13,7 +13,7 @@ from data_importer.tests.cpfcnpj import CPF
 from data_importer.tests.mocks import MockLoggingHandler
 from data_importer.handlers import DBLoggingHandler
 from data_importer.tests.models import Error
-from django.utils.encoding import smart_unicode
+from django.utils.encoding import smart_text
 
 
 class BaseImportWithFields(BaseImporter):
@@ -24,6 +24,7 @@ class BaseImportWithFields(BaseImporter):
 
     def get_logger_handlers(self):
         return [(MockLoggingHandler,(),{})]
+
 
 class SimpleValidationsImporter(BaseImportWithFields):
     """
@@ -38,9 +39,10 @@ class SimpleValidationsImporter(BaseImportWithFields):
         try:
             val = CPF(val)
         except ValueError as msg:
-            raise ValidationError(smart_unicode(msg))
+            raise ValidationError(smart_text(msg))
         else:
             return val
+
 
 class SimpleValidationsImporterDB(SimpleValidationsImporter):
     """
@@ -52,6 +54,7 @@ class SimpleValidationsImporterDB(SimpleValidationsImporter):
 
     def get_logger_handlers(self):
         return [(DBLoggingHandler,(),{'model':Error})]
+
 
 class RequiredFieldValidationsImporter(SimpleValidationsImporter):
     """
@@ -69,6 +72,7 @@ class RequiredFieldValidationsImporter(SimpleValidationsImporter):
             raise ValidationError(smart_unicode(msg))
         else:
             return val
+
 
 class RequiredFieldValidationsImporterDB(RequiredFieldValidationsImporter):
     """
