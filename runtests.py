@@ -62,8 +62,8 @@ def runtests(*test_args):
     parent = os.path.dirname(os.path.abspath(__file__))
     sys.path.insert(0, parent)
 
-    from django.test.simple import DjangoTestSuiteRunner
-    failures = DjangoTestSuiteRunner(
+    from django.test.runner import DiscoverRunner
+    failures = DiscoverRunner(
         interactive=True, **test_kwargs).run_tests(test_args)
     sys.exit(failures)
 
