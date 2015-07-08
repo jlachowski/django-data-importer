@@ -9,6 +9,7 @@ from builtins import map
 from builtins import *
 from builtins import object
 from past.builtins import basestring
+import io as _io
 
 from django.core.exceptions import ValidationError
 from django.db.models.fields.files import FieldFile
@@ -70,7 +71,7 @@ class BaseImporter(object):
         Load a file or a file path to self.import_file
         """
         try:
-            if isinstance(source, file):
+            if isinstance(source, _io.BytesIO):
                 self.import_file = source
             if isinstance(source, FieldFile):
                 self.import_file = open(source.file.name, 'rb')

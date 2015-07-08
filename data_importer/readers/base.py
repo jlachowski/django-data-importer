@@ -11,6 +11,7 @@ from builtins import map
 from builtins import *
 from builtins import object
 # coding: utf-8
+import io as _io
 from collections import OrderedDict
 from data_importer.exceptions import UnknowSource
 import unicodedata
@@ -19,7 +20,7 @@ from data_importer.utils import to_unicode
 
 class BaseReader(object):
 
-    def __init__(self,f):
+    def __init__(self, f):
         """
         init receive f as a file object
         """
@@ -38,7 +39,7 @@ class BaseReader(object):
         Don't touch in this method, some assertions here is really important
         """
         try:
-            if isinstance(source, file):
+            if isinstance(source, _io.IOBase):
                 self._source = source
             if isinstance(source, str):
                 self._source = open(source, 'rb')
@@ -48,13 +49,13 @@ class BaseReader(object):
         self.loaded = True
         self.set_reader()
         assert self._reader is not None
-        assert self.headers is not None # call self.headers
+        assert self.headers is not None  # call self.headers
 
     def unload(self):
         """
         Close the input file and free resources, it matters for big files :)
         """
-        if isinstance(self._source,file):
+        if isinstance(self._source, _io.IOBase):
             self._source.close()
         else:
             self._source = None
@@ -69,9 +70,9 @@ class BaseReader(object):
         This method is called in self.__load after source is read and should set
         self._reader. self.get_items and self.get_header should read self._reader.
         """
-        self._reader = open(self._source.name,'rb')
+        self._reader = open(self._source.name, 'rb')
 
-    def get_value(self,item,**kwargs):
+    def get_value(self, item, **kwargs):
         """
         Receive item from source and should return formated value.
         Can be customized to handle various types. The default just return
@@ -82,15 +83,15 @@ class BaseReader(object):
         """
         return item
 
-    def get_item(self,row):
+    def get_item(self, row):
         """
         Given a header and a row return a sorted dict
         """
         def normalize(s):
-            if isinstance(s,str):
+            if isinstance(s, basestring):
                 try:
                     return to_unicode(s.strip())
-                except (UnicodeDecodeError,UnicodeEncodeError):
+                except (UnicodeDecodeError, UnicodeEncodeError):
                     return s.strip()
             else:
                 return s
@@ -99,12 +100,13 @@ class BaseReader(object):
         # {'a':1,'b':2}
         # if we have headers = ['a','b','c','d'] and values [1,2], dict will be
         # {'a':1,'b':2}
-        d = OrderedDict([i for i in zip(self.headers,list(map(normalize,row))) if i[0]])
+        d = OrderedDict(
+            [i for i in zip(self.headers, list(map(normalize, row))) if i[0]])
         # since zip can cut tuple to smaller sequence, if we get incomplete
         # lines in file this for over headers put it on row dict
         for k in self.headers:
             if k not in d:
-                d[k]=u''
+                d[k] = u''
         d.keyOrder = self.headers
         return d
 
@@ -121,20 +123,21 @@ class BaseReader(object):
         """
 
         if not self._headers:
-            self._headers = list(map(self.normalize_string,next(self._reader)))
+            self._headers = list(
+                map(self.normalize_string, next(self._reader)))
         return self._headers
 
-    def normalize_string(self,value):
+    def normalize_string(self, value):
         if not value:
             return ''
         value = value.strip()
         value = value.lower()
         try:
-            value = unicodedata.normalize('NFKD',str(value))
-        except (UnicodeDecodeError,UnicodeEncodeError):
-            value = unicodedata.normalize('NFKD',to_unicode(value))
-        value = value.encode('ascii','ignore')
-        value = value.replace(u' ',u'_')
+            value = unicodedata.normalize('NFKD', str(value))
+        except (UnicodeDecodeError, UnicodeEncodeError):
+            value = unicodedata.normalize('NFKD', to_unicode(value))
+        value = value.encode('ascii', 'ignore')
+        value = value.replace(b' ', b'_')
         return value
 
     def get_items(self):
