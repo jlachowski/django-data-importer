@@ -12,13 +12,13 @@ from builtins import *
 import os
 import data_importer
 from django.test import TestCase
-from data_importer.tests.test_cpfcnpj import CPF
-from data_importer.tests.test_importers import BaseImportWithFields, SimpleValidationsImporter, RequiredFieldValidationsImporter,\
+from data_importer.tests.cpfcnpj import CPF
+from data_importer.tests.importers import BaseImportWithFields, SimpleValidationsImporter, RequiredFieldValidationsImporter,\
     SimpleValidationsImporterDB, RequiredFieldValidationsImporterDB
 from collections import OrderedDict
-from data_importer.tests.test_mocks import MockLoggingHandler
+from data_importer.tests.mocks import MockLoggingHandler
 from data_importer.handlers import DBLoggingHandler
-from data_importer.tests.test_models import Error
+from data_importer.tests.models import Error
 
 def setUpClassData(klass):
     """
