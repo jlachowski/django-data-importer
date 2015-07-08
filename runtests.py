@@ -9,25 +9,31 @@ standard_library.install_aliases()
 from builtins import *
 import os, sys
 
+import django
 from django.conf import settings
-
 
 if not settings.configured:
     settings_dict = dict(
         SITE_ID=1,
+        MIDDLEWARE_CLASSES=(
+            'django.middleware.common.CommonMiddleware',
+            'django.middleware.csrf.CsrfViewMiddleware'
+        ),
         INSTALLED_APPS=(
             'django.contrib.contenttypes',
             'data_importer',
             'data_importer.tests',
-            ),
+        ),
         DATABASES={
             "default": {
                 "ENGINE": "django.db.backends.sqlite3"
-                }
-            },
-        )
+            }
+        },
+    )
 
     settings.configure(**settings_dict)
+
+django.setup()
 
 
 def runtests(*test_args):
@@ -41,17 +47,17 @@ def runtests(*test_args):
         'noinput': False,
         'failfast': False,
     }
-    for i,arg in enumerate(sys.argv):
+    for i, arg in enumerate(sys.argv):
         if arg.startswith('-v'):
-            _value = arg.replace('-v','')
+            _value = arg.replace('-v', '')
             if len(_value):
                 test_kwargs['verbosity'] = int(_value)
             else:
-                test_kwargs['verbosity'] = int(sys.argv[i+1])
+                test_kwargs['verbosity'] = int(sys.argv[i + 1])
         if arg == '--noinput':
             test_kwargs['noinput'] = True
         if arg == '--failfast':
-            test_kwargs['failfast'] =True
+            test_kwargs['failfast'] = True
 
     parent = os.path.dirname(os.path.abspath(__file__))
     sys.path.insert(0, parent)
