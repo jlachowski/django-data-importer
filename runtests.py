@@ -43,9 +43,11 @@ def runtests(*test_args):
 
     # try to set more used args to django test
     test_kwargs = {
+        'pattern': 'test*.py',
         'verbosity': 1,
         'noinput': False,
         'failfast': False,
+        'interactive': True,
     }
     for i, arg in enumerate(sys.argv):
         if arg.startswith('-v'):
@@ -63,8 +65,7 @@ def runtests(*test_args):
     sys.path.insert(0, parent)
 
     from django.test.runner import DiscoverRunner
-    failures = DiscoverRunner(
-        interactive=True, **test_kwargs).run_tests(test_args)
+    failures = DiscoverRunner(**test_kwargs).run_tests(test_args)
     sys.exit(failures)
 
 

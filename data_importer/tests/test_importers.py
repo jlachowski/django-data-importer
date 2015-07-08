@@ -9,10 +9,10 @@ from future import standard_library
 standard_library.install_aliases()
 from builtins import *
 from data_importer.base import BaseImporter, ValidationError
-from data_importer.tests.cpfcnpj import CPF
-from data_importer.tests.mocks import MockLoggingHandler
+from data_importer.tests.test_cpfcnpj import CPF
+from data_importer.tests.test_mocks import MockLoggingHandler
 from data_importer.handlers import DBLoggingHandler
-from data_importer.tests.models import Error
+from data_importer.tests.test_models import Error
 from django.utils.encoding import smart_text
 
 
