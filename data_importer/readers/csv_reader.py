@@ -13,7 +13,7 @@ from .base import BaseReader
 class CSVReader(BaseReader):
 
     def __init__(self, f, **kwargs):
-        self.delimiter = kwargs.pop('delimiter', b';')
+        self.delimiter = kwargs.pop('delimiter', ';')
         super(CSVReader, self).__init__(f)
 
     def set_reader(self):
