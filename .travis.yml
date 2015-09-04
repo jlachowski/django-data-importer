@@ -3,8 +3,8 @@ python:
   - "2.7"
   - "3.4"
 env:
-  - DJANGO=1.7.8
-  - DJANGO=1.8.2
+  - DJANGO=1.7.10
+  - DJANGO=1.8.4
 install:
   - pip install -q -U pip
   - pip install -q Django==$DJANGO
