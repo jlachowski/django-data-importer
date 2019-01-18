@@ -65,9 +65,9 @@ class BaseImporter(object):
             if isinstance(source, _io.BytesIO):
                 self.import_file = source
             if isinstance(source, FieldFile):
-                self.import_file = open(source.file.name, 'rb')
+                self.import_file = open(source.file.name, 'r')
             if isinstance(source, str):
-                self.import_file = open(source, 'rb')
+                self.import_file = open(source, 'r')
         except Exception as err:
             raise UnknowSource(err)
 

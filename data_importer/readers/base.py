@@ -30,7 +30,7 @@ class BaseReader(object):
             if isinstance(source, _io.IOBase):
                 self._source = source
             if isinstance(source, str):
-                self._source = open(source, 'rb')
+                self._source = open(source, 'r')
         except Exception as err:
             raise UnknowSource(err)
 
@@ -58,7 +58,7 @@ class BaseReader(object):
         This method is called in self.__load after source is read and should set
         self._reader. self.get_items and self.get_header should read self._reader.
         """
-        self._reader = open(self._source.name, 'rb')
+        self._reader = open(self._source.name, 'r')
 
     def get_value(self, item, **kwargs):
         """

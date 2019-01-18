@@ -67,7 +67,7 @@ class ReaderTest(TestCase):
     def test_base_reader_init(self):
         self.assertTrue(os.path.isfile(self.files['csv_sheet']), u"file for basereader test not exists")
         reader = data_importer.readers.BaseReader(self.files['csv_sheet'])
-        f = open(self.files['csv_sheet'], 'rb').read()
+        f = open(self.files['csv_sheet'], 'r').read()
         self.assertEquals(f, reader._source.read())
 
     def test_csv_reader(self):
