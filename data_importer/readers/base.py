@@ -42,7 +42,7 @@ class BaseReader(object):
             if isinstance(source, _io.IOBase):
                 self._source = source
             if isinstance(source, str):
-                self._source = open(source, 'rb')
+                self._source = open(source, 'rt')
         except Exception as err:
             raise UnknowSource(err)
 
@@ -88,13 +88,7 @@ class BaseReader(object):
         Given a header and a row return a sorted dict
         """
         def normalize(s):
-            if isinstance(s, basestring):
-                try:
-                    return to_unicode(s.strip())
-                except (UnicodeDecodeError, UnicodeEncodeError):
-                    return s.strip()
-            else:
-                return s
+            return s.strip()
 
         # if we have headers = ['a','b'] and values [1,2,3,4], dict will be
         # {'a':1,'b':2}
@@ -137,7 +131,7 @@ class BaseReader(object):
         except (UnicodeDecodeError, UnicodeEncodeError):
             value = unicodedata.normalize('NFKD', to_unicode(value))
         value = value.encode('ascii', 'ignore')
-        value = value.replace(b' ', b'_')
+        value = value.replace(u' ', u'_')
         return value
 
     def get_items(self):
