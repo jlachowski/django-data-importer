@@ -11,6 +11,7 @@ class BaseReader(object):
         """
         init receive f as a file object
         """
+        self.encoding = 'utf-8'
         self.loaded = False
         self._source = None
         self._reader = None

@@ -38,6 +38,7 @@ class BaseImporter(object):
 
     def __init__(self, import_file, reader=None, reader_kwargs={}):
         from django.conf import settings
+        self.encoding = 'utf-8'
         self._validation_results = OrderedDict()
         self.set_logger()
         self._load(import_file)
