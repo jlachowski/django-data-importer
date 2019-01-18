@@ -11,6 +11,7 @@ from collections import OrderedDict
 import sys
 import traceback
 import logging
+from chardet.universaldetector import UniversalDetector
 
 
 class FailedInStart(Exception):
@@ -47,6 +48,16 @@ class BaseImporter(object):
         else:
             self.logger.setLevel(logging.INFO)
 
+    def _detect_encoding(self, source):
+        detector = UniversalDetector()
+        f = _io.open(source, 'rb')
+        for line in f:
+            detector.feed(line)
+            if detector.done: break
+        detector.close()
+        f.close()
+        self.encoding = detector.result.get('encoding', 'utf-8')
+
     def _validate_class(self):
         """
         Somethings here is important, as sample we need fields :)
@@ -65,9 +76,11 @@ class BaseImporter(object):
             if isinstance(source, _io.BytesIO):
                 self.import_file = source
             if isinstance(source, FieldFile):
-                self.import_file = open(source.file.name, 'r')
+                self._detect_encoding(source.file.name)
+                self.import_file = _io.open(source.file.name, 'r', encoding=self.encoding)
             if isinstance(source, str):
-                self.import_file = open(source, 'r')
+                self._detect_encoding(source)
+                self.import_file = _io.open(source, 'r', encoding=self.encoding)
         except Exception as err:
             raise UnknowSource(err)
 

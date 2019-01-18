@@ -2,8 +2,7 @@
 import io as _io
 from collections import OrderedDict
 from data_importer.exceptions import UnknowSource
-import unicodedata
-from data_importer.utils import to_unicode
+from chardet.universaldetector import UniversalDetector
 
 
 class BaseReader(object):
@@ -21,6 +20,16 @@ class BaseReader(object):
     def __iter__(self):
         return self.get_items()
 
+    def __detect_encoding(self, source):
+        detector = UniversalDetector()
+        f = _io.open(source, 'rb')
+        for line in f:
+            detector.feed(line)
+            if detector.done: break
+        detector.close()
+        f.close()
+        self.encoding = detector.result.get('encoding', 'utf-8')
+
     def __load(self, source):
         """
         Load a file or a file path to self._source.
@@ -30,7 +39,8 @@ class BaseReader(object):
             if isinstance(source, _io.IOBase):
                 self._source = source
             if isinstance(source, str):
-                self._source = open(source, 'r')
+                self.__detect_encoding(source)
+                self._source = _io.open(source, 'r', encoding=self.encoding)
         except Exception as err:
             raise UnknowSource(err)
 
@@ -58,7 +68,7 @@ class BaseReader(object):
         This method is called in self.__load after source is read and should set
         self._reader. self.get_items and self.get_header should read self._reader.
         """
-        self._reader = open(self._source.name, 'r')
+        self._reader = _io.open(self._source.name, 'r', encoding=self.encoding)
 
     def get_value(self, item, **kwargs):
         """
@@ -76,7 +86,10 @@ class BaseReader(object):
         Given a header and a row return a sorted dict
         """
         def normalize(s):
-            return s.strip()
+            if isinstance(s, str):
+                return s.strip()
+            else:
+                return s
 
         # if we have headers = ['a','b'] and values [1,2,3,4], dict will be
         # {'a':1,'b':2}
@@ -88,7 +101,7 @@ class BaseReader(object):
         # lines in file this for over headers put it on row dict
         for k in self.headers:
             if k not in d:
-                d[k] = b''
+                d[k] = ''
         d.keyOrder = self.headers
         return d
 
@@ -112,14 +125,14 @@ class BaseReader(object):
     def normalize_string(self, value):
         if not value:
             return ''
-        value = value.strip()
-        value = value.lower()
-        try:
-            value = unicodedata.normalize('NFKD', str(value))
-        except (UnicodeDecodeError, UnicodeEncodeError):
-            value = unicodedata.normalize('NFKD', to_unicode(value))
-        value = value.encode('ascii', 'ignore')
-        value = value.replace(b' ', b'_')
+        # value = value.strip()
+        # value = value.lower()
+        # try:
+        #     value = unicodedata.normalize('NFKD', str(value))
+        # except (UnicodeDecodeError, UnicodeEncodeError):
+        #     value = unicodedata.normalize('NFKD', to_unicode(value))
+        # value = value.encode('ascii', 'ignore')
+        # value = value.replace(b' ', b'_')
         return value
 
     def get_items(self):
