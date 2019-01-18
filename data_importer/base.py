@@ -1,14 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-from future import standard_library
-standard_library.install_aliases()
-from builtins import map
-from builtins import *
-from builtins import object
-from past.builtins import basestring
 import io as _io
 
 from django.core.exceptions import ValidationError
@@ -16,7 +6,7 @@ from django.db.models.fields.files import FieldFile
 from django.utils.encoding import smart_text
 from django.utils.translation import ugettext as _
 from data_importer.exceptions import UnknowSource
-from data_importer.readers import *
+from data_importer.readers import CSVReader, XLSReader, XLSXReader
 from collections import OrderedDict
 import sys
 import traceback
@@ -25,6 +15,7 @@ import logging
 
 class FailedInStart(Exception):
     pass
+
 
 READERS_X_EXTENSIONS = {
     'csv': CSVReader,
@@ -74,9 +65,9 @@ class BaseImporter(object):
             if isinstance(source, _io.BytesIO):
                 self.import_file = source
             if isinstance(source, FieldFile):
-                self.import_file = open(source.file.name, 'rt')
+                self.import_file = open(source.file.name, 'rb')
             if isinstance(source, str):
-                self.import_file = open(source, 'rt')
+                self.import_file = open(source, 'rb')
         except Exception as err:
             raise UnknowSource(err)
 
@@ -199,7 +190,8 @@ class BaseImporter(object):
             if i not in self.errors:
                 self.errors[i] = []
             if isinstance(msg, ValidationError):
-                self.errors[i] = list(set(self.errors[i] + list(map(smart_text,  msg.messages))))
+                self.errors[i] = list(
+                    set(self.errors[i] + list(map(smart_text, msg.messages))))
                 return map(smart_text, msg.messages)[0]
             else:
                 self.errors[i] = list(set(self.errors[i] + [smart_text(msg)]))

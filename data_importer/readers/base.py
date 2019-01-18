@@ -1,15 +1,3 @@
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-from future import standard_library
-standard_library.install_aliases()
-from builtins import str
-from builtins import zip
-from builtins import next
-from builtins import map
-from builtins import *
-from builtins import object
 # coding: utf-8
 import io as _io
 from collections import OrderedDict
@@ -42,7 +30,7 @@ class BaseReader(object):
             if isinstance(source, _io.IOBase):
                 self._source = source
             if isinstance(source, str):
-                self._source = open(source, 'rt')
+                self._source = open(source, 'rb')
         except Exception as err:
             raise UnknowSource(err)
 
@@ -100,7 +88,7 @@ class BaseReader(object):
         # lines in file this for over headers put it on row dict
         for k in self.headers:
             if k not in d:
-                d[k] = u''
+                d[k] = b''
         d.keyOrder = self.headers
         return d
 
@@ -131,7 +119,7 @@ class BaseReader(object):
         except (UnicodeDecodeError, UnicodeEncodeError):
             value = unicodedata.normalize('NFKD', to_unicode(value))
         value = value.encode('ascii', 'ignore')
-        value = value.replace(u' ', u'_')
+        value = value.replace(b' ', b'_')
         return value
 
     def get_items(self):

@@ -1,11 +1,4 @@
 # coding: utf-8
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-from future import standard_library
-standard_library.install_aliases()
-from builtins import *
 from django.db import models
 import logging
 
@@ -17,9 +10,10 @@ LOG_LEVELS = (
     (logging.FATAL, 'fatal'),
 )
 
+
 class ErrorManager(models.Manager):
 
-    def create_from_record(self,record):
+    def create_from_record(self, record):
         entry = Error(
             logger=record.name,
             msg=record.getMessage(),
@@ -31,11 +25,12 @@ class ErrorManager(models.Manager):
         entry.save()
         return entry
 
+
 class Error(models.Model):
     logger = models.CharField(max_length=100)
     msg = models.TextField()
     levelno = models.IntegerField(choices=LOG_LEVELS)
-    pathname = models.TextField() # cause can be greater than 256 chars
+    pathname = models.TextField()  # cause can be greater than 256 chars
     funcname = models.CharField(max_length=100)
     lineno = models.IntegerField()
     created = models.DateTimeField(auto_now_add=True)

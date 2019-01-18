@@ -1,24 +1,8 @@
-from __future__ import division
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import absolute_import
-from future import standard_library
-standard_library.install_aliases()
-from builtins import map
-from builtins import str
-from builtins import zip
-from builtins import range
-from builtins import *
-from past.utils import old_div
-from builtins import object
 # -*- coding: utf-8 -*-
-
-import re, math
+import math
 from random import randint
-from django.db import models
-from django import forms
-from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
+
 
 # -------------------------------------------------
 # Based in http://www.python.org.br/wiki/VerificadorDeCnpj
@@ -53,17 +37,17 @@ class CNPJ(object):
     def __init__(self, cnpj):
 
         # transform list or int or long in a string
-        if type(cnpj) in (int,int):
+        if type(cnpj) in (int, int):
             cnpj = u"%s" % cnpj
-        if type(cnpj) in (list,tuple):
-            cnpj= u''.join([str(x) for x in cnpj])
+        if type(cnpj) in (list, tuple):
+            cnpj = u''.join([str(x) for x in cnpj])
 
         try:
             str
         except:
             str = (str, str)
         # only numbers = 14, numbers with '.', '/' and '-' = 18
-        if len(cnpj) not in (14,18):
+        if len(cnpj) not in (14, 18):
             raise ValueError(self.error_messages['max_digits'])
 
         if isinstance(cnpj, str):
@@ -158,7 +142,7 @@ class CNPJ(object):
 
         # and following rules we stabilish some weight to multiply
         def weightlist(s=12):
-            x = (list(range(2,10))*2)[:s]
+            x = (list(range(2, 10)) * 2)[:s]
             x.reverse()
             return x
 
@@ -168,7 +152,7 @@ class CNPJ(object):
             # run trought numbers (x) mutiplying by weight (y) and then get
             # sum of rest of division by 11 as interger
             # (we have more than 9 digits so isn't simple as make calcs for CPF)
-            r = int(sum([x*y for (x, y) in zip(cnpj, weightlist(len(cnpj)))]) % 11)
+            r = int(sum([x * y for (x, y) in zip(cnpj, weightlist(len(cnpj)))]) % 11)
 
             # if digit is smaller than 2, turns 0
             if r < 2:
@@ -186,6 +170,7 @@ class CNPJ(object):
     def single(self):
         """ returns single cnpj number (without '.', '/' and '-') """
         return u''.join([str(x) for x in self.cnpj])
+
 
 # Based in http://www.python.org.br/wiki/VerificadorDeCpf
 class CPF(object):
@@ -209,7 +194,7 @@ class CPF(object):
     """
 
     # cpfs with same number in all digits isn't valid
-    invalid_cpfs=[[x for i in range(11)] for x in range(1,9)]
+    invalid_cpfs = [[x for i in range(11)] for x in range(1, 9)]
 
     error_messages = {
         'invalid': _(u"Invalid CPF number."),
@@ -220,10 +205,10 @@ class CPF(object):
     def __init__(self, cpf):
 
         # transform list or int or long in a string
-        if type(cpf) in (int,int):
+        if type(cpf) in (int, int):
             cpf = u"%s" % cpf
-        if type(cpf) in (list,tuple):
-            cpf= u''.join([str(x) for x in cpf])
+        if type(cpf) in (list, tuple):
+            cpf = u''.join([str(x) for x in cpf])
 
         try:
             str
@@ -231,7 +216,7 @@ class CPF(object):
             str = (str, str)
 
         # only numbers = 11, numbers + '.' and '_' = 14
-        if len(cpf) not in (11,14):
+        if len(cpf) not in (11, 14):
             # need to be xxxxxxxxxxx or xxx.xxx.xxx-xx
             raise ValueError(self.error_messages['max_digits'])
 
@@ -328,13 +313,13 @@ class CPF(object):
 
             # run trought numbers multiplying number (v) by weight (len(cpf)+1-i)
             # and then get sum rest of division by 11 as integer
-            r = int(sum([math.floor((len(cpf)+1-i_v[0])*i_v[1]) for i_v in enumerate(cpf)]) % 11)
+            r = int(sum([math.floor((len(cpf) + 1 - i_v[0]) * i_v[1]) for i_v in enumerate(cpf)]) % 11)
 
             # if digit is smaller than 2, turns 0
             if r < 2:
                 f = 0
             else:
-                f = 11 -r
+                f = 11 - r
 
             # append to cpf list
             cpf.append(f)
@@ -350,7 +335,8 @@ class CPF(object):
         """ returns single cpf number (without '.' and '-') """
         return u''.join([str(x) for x in self.cpf])
 
-def get_digits(randns,d1weight,d2weight):
+
+def get_digits(randns, d1weight, d2weight):
     """
     return a tuple with cpf or cnpj digits. we use same method to get
     digits based on numbers and weights
@@ -359,13 +345,13 @@ def get_digits(randns,d1weight,d2weight):
     # GET FIRST CHECK DIGIT
 
     # multiply by weightlist for first digit
-    d1ns = [randns[i]*m for i,m in enumerate(d1weight)]
+    d1ns = [randns[i] * m for i, m in enumerate(d1weight)]
 
     # get sum
     d1sum = sum(d1ns)
 
     # get firts digit. if first digit >= 10, transform in 0
-    d1 = int(round(d1sum - (math.floor(old_div(d1sum,11))*11)))
+    d1 = int(round(d1sum - (math.floor(d1sum / 11) * 11)))
     if d1 < 2:
         d1 = 0
     else:
@@ -374,49 +360,50 @@ def get_digits(randns,d1weight,d2weight):
     # GET SECOND CHECK DIGIT
 
     # multipy by weightlist for second digit, but add first digit in list
-    d2ns = (lambda: [(randns+[d1])[i]*m for i,m in enumerate(d2weight)])()
+    d2ns = (lambda: [(randns + [d1])[i] * m for i, m in enumerate(d2weight)])()
 
     # get sum
     d2sum = sum(d2ns)
 
     # get second digit. if second digit >= 10, transform in 0
-    d2 = int(round(d2sum - (math.floor(old_div(d2sum,11))*11)))
+    d2 = int(round(d2sum - (math.floor(d2sum / 11) * 11)))
     if d2 < 2:
         d2 = 0
     else:
         d2 = 11 - d2
 
-    return d1,d2
+    return d1, d2
 
-def CPFGenerator(amount=1,cpfn=None):
+
+def CPFGenerator(amount=1, cpfn=None):
     """ generate valid cpf for tests """
 
     # randnumbers are created from 0 to 9, and multiplicated by these list for
     # fist digit
-    d1weight = list(range(2,11)) # [2,3,...,10]
+    d1weight = list(range(2, 11))  # [2,3,...,10]
     d1weight.reverse()
 
     # for second digit same as for first digit, but with d1
-    d2weight = list(range(2,12)) # [2,3,...,11]
+    d2weight = list(range(2, 12))  # [2,3,...,11]
     d2weight.reverse()
 
     # create how many cpfs amount says then add to set cpfs
-    cpfs=set()
+    cpfs = set()
 
     while len(cpfs) < amount:
         # get some rand numbers
         if not cpfn:
-            randns = [randint(0,9) for x in range(9)]
+            randns = [randint(0, 9) for x in range(9)]
         else:
             randns = cpfn
 
-        d1,d2 = get_digits(randns,d1weight,d2weight)
+        d1, d2 = get_digits(randns, d1weight, d2weight)
 
         # transform cpf in a string
-        cpf = ("%s"*11) % tuple(randns+[d1,d2])
+        cpf = ("%s" * 11) % tuple(randns + [d1, d2])
 
         # if not exist, add in cpfs
-        if not cpf in cpfs:
+        if cpf not in cpfs:
             cpfs.add(cpf)
 
     cpfs = list(cpfs)
@@ -425,28 +412,29 @@ def CPFGenerator(amount=1,cpfn=None):
     else:
         return cpfs[0]
 
-def CNPJGenerator(amount=1,cnpjn=None):
+
+def CNPJGenerator(amount=1, cnpjn=None):
     """ generate valid cnpj for tests """
 
-    d1weight = [5,4,3,2,9,8,7,6,5,4,3,2]
+    d1weight = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
     d2weight = [6] + d1weight
 
-    cnpjs=set()
+    cnpjs = set()
 
     while len(cnpjs) < amount:
 
         if not cnpjn:
-            randns = [randint(0,9) for x in range(8)] + [0,0,0,randint(0,9)]
+            randns = [randint(0, 9) for x in range(8)] + [0, 0, 0, randint(0, 9)]
         else:
             randns = cnpjn
 
-        d1,d2 = get_digits(randns,d1weight,d2weight)
+        d1, d2 = get_digits(randns, d1weight, d2weight)
 
         # transform cnpj in a string
-        cnpj = ("%s"*14) % tuple(randns+[d1,d2])
+        cnpj = ("%s" * 14) % tuple(randns + [d1, d2])
 
         # if not exist, add in cnpjs
-        if not cnpj in cnpjs:
+        if cnpj not in cnpjs:
             cnpjs.add(cnpj)
 
     cnpjs = list(cnpjs)
@@ -454,4 +442,3 @@ def CNPJGenerator(amount=1,cnpjn=None):
         return cnpjs
     else:
         return cnpjs[0]
-
