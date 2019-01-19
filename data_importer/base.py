@@ -206,7 +206,7 @@ class BaseImporter(object):
             if isinstance(msg, ValidationError):
                 self.errors[i] = list(
                     set(self.errors[i] + list(map(smart_text, msg.messages))))
-                return map(smart_text, msg.messages)[0]
+                return list(map(smart_text, msg.messages))[0]
             else:
                 self.errors[i] = list(set(self.errors[i] + [smart_text(msg)]))
                 return smart_text(msg)
