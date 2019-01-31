@@ -30,8 +30,8 @@ setup(
     ],
     install_requires=[
         "Django >= 1.3.4",
-        "openpyxl == 2.4.11",
-        "xlrd == 1.2.0",
+        "openpyxl",
+        "xlrd",
         "future"
     ],
     zip_safe = False,
